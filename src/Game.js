@@ -74,6 +74,7 @@ const cellStyle = (cell) => ({
   padding: "10px",
   height: "20px",
   width: "20px",
+  textAlign: "center",
   borderColor: "black",
   borderStyle: "solid",
   borderTopWidth: "1px",
