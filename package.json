@@ -4,24 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development",
+    "start": "webpack serve --config webpack.config --progress",
+    "startold": "webpack-dev-server --mode development",
     "build": "webpack --mode development",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/cli": "^7.1.0",
-    "@babel/core": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.2",
-    "css-loader": "^1.0.0",
-    "react-hot-loader": "^4.3.11",
-    "style-loader": "^0.23.0",
-    "webpack": "^4.19.1",
-    "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.8"
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "react-hot-loader": "^4.13.0",
+    "webpack": "^5.49.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
     "react": "^17.0.2",

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {hot} from "react-hot-loader";
-import "./App.css";
+// import "./App.css";
 import NewGame from "./NewGame";
 
 class App extends Component{
