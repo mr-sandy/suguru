@@ -10,7 +10,7 @@
 table.game {
   margin-top: 40px;
   border-collapse: collapse;
-  border: 3px solid black;
+  border: 0px solid black;
 
   td {
     padding: 5px;
@@ -25,22 +25,29 @@ table.game {
     margin: 0;
 
     &.right {
-      border-right-width: 3px;
+      border-right-width: 4px;
     }
 
     &.bottom {
-      border-bottom-width: 3px;
+      border-bottom-width: 4px;
+    }
+
+    &.left {
+      border-left-width:4px;
+    }
+
+    &.top {
+      border-top-width: 4px;
     }
 
     &.highlighted {
-      background-color: #eee;
+      background-color: lightblue;
     }
   }
 }
 
-div.TEMP {
+div.TEMPx {
   display: block;
-  background-color: #eee;
   border-color: #000;
   border-style: solid;
   border-width: 0;

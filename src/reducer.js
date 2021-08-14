@@ -1,4 +1,4 @@
-import { initialiseCells } from "./helpers";
+import { initialiseCells, selectCells } from "./helpers";
 
 export const initialState = {
   size: 6,
@@ -19,18 +19,18 @@ export function reducer(state, action) {
       return {
         ...state,
         selecting: true,
-        selectedCells: [action.cell],
+        selectedCells: [action.coords],
       };
     case "select":
       return state.selecting
         ? {
             ...state,
             selecting: true,
-            selectedCells: [...state.selectedCells, action.cell],
+            selectedCells: [...state.selectedCells, action.coords],
           }
         : state;
     case "endSelect":
-      return { ...state, selecting: false, selectedCells: [] };
+      return { ...state, cells: selectCells(state.cells, state.selectedCells), selecting: false, selectedCells: [] };
     default:
       throw new Error();
   }

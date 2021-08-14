@@ -1,8 +1,8 @@
 import React from "react";
+import {coordinateSetIncludes} from '../helpers';
 
 function Board({ cells, selectedCells, onSelectStart, onSelectEnd, onSelect }) {
-  const isHighlighted = (i, j) =>
-    selectedCells.findIndex((c) => c.x === i && c.y === j) > -1;
+  const isHighlighted = (i, j) => coordinateSetIncludes(selectedCells, [i, j]);
 
   return (
     <table className="game" onMouseLeave={onSelectEnd}>

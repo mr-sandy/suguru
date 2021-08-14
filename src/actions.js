@@ -3,11 +3,11 @@ export function setSize(size) {
 }
 
 export function startSelect(i, j) {
-  return { type: "startSelect", cell: { x: i, y: j } };
+  return { type: "startSelect", coords: [i, j] };
 }
 
 export function select(i, j) {
-  return { type: "select", cell: { x: i, y: j } };
+  return { type: "select", coords: [i, j] };
 }
 
 export function endSelect() {
