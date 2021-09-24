@@ -20,7 +20,10 @@ export function initialiseCells(size) {
   for (var i = 0; i < size; i++) {
     const row = [];
     for (var j = 0; j < size; j++) {
-      row.push({ value: null, bounds: getBounds(i, j, size) });
+      row.push({
+        value: null,
+        bounds: getBounds(i, j, size)
+      });
     }
 
     cells.push(row);
@@ -38,8 +41,6 @@ export function coordinateSetIncludes(coordinateSet, coordinates) {
 }
 
 export function selectCells(currentCells, selectedCoordinates) {
-  console.log(JSON.stringify(selectedCoordinates, null, 1));
-  console.log(JSON.stringify(currentCells, null, 1));
   const gridSize = currentCells.length - 1;
 
   return currentCells.map((row, i) => {
@@ -98,5 +99,51 @@ export function selectCells(currentCells, selectedCoordinates) {
         return { ...cell, bounds: newBounds };
       }
     });
+  });
+}
+
+function getNeighboursAbove(cells, coords) {
+  const [row, column] = coords;
+
+  const cell = cells[row][column];
+
+  if (!cell.bounds.includes("top")) {
+    const neighbour = cells[row - 1][column];
+    group = [...group, neighbour, getNeighbours(cells, [row - 1, column])]
+  }
+
+  return neighbours;
+}
+
+export function getCellGroup(cells, coords, soFar = []) {
+  const [row, column] = coords;
+
+  const cell = cells[row][column];
+
+  const above = cell.bounds.includes("top") && soFar.findIndex(c => c[0] === coords[0] && c[1] === coords[1] === -1)
+    ? []
+    : getCellGroup(cells, [row - 1, column], [...soFar, coords]);
+
+    const below = cell.bounds.includes("top") && soFar.findIndex(c => c[0] === coords[0] && c[1] === coords[1] === -1)
+    ? []
+    : getCellGroup(cells, [row - 1, column], [...soFar, coords]);
+
+
+  return [cell, ...above, ...below];
+}
+
+export function incrementCellValue(currentCells, selectedCoordinates) {
+  return currentCells.map((row, i) => {
+    return row.map((cell, j) => {
+      if (i === selectedCoordinates[0] && j === selectedCoordinates[1]) {
+        return {
+          ...cell,
+          value: 1
+        };
+      }
+      else {
+        return cell;
+      }
+    })
   });
 }

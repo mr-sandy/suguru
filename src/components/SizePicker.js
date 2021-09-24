@@ -1,10 +1,10 @@
 import React from "react";
 
-function SizePicker({ size, onChange }) {
+function SizePicker({ size, onSetSize }) {
   return (
     <>
-      <label>size: </label>
-      <select value={size} onChange={onChange}>
+      <label>Board size: </label>
+      <select value={size} onChange={e => onSetSize(e.target.value)}>
         <option value="0">not set</option>
         <option value="1">1</option>
         <option value="2">2</option>
