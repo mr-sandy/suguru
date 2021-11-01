@@ -4,7 +4,7 @@ import Board from "./Board";
 import { setSize, startSelect, endSelect, select, nextStep, incrementValue } from "../actions";
 import SizePicker from "./SizePicker";
 
-const instructions = ['', 'Step 1: Select the cells', 'Step 2: Set any known values', '']
+const instructions = ['', 'Step 1: Select the cells', 'Step 2: Set any known values', 'Step 3: Solve!']
 
 function Game() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -29,7 +29,7 @@ function Game() {
             size={size}
             onSetSize={s => dispatch(setSize(s))}
           />}
-        <button onClick={() => dispatch(nextStep())}>Next</button>
+        <button onClick={() => dispatch(nextStep())}>{step === steps.SOLVE ? "Go!" : "Next"}</button>
       </div>
     </>
   );

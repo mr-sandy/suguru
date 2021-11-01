@@ -1,3 +1,5 @@
+import { steps } from "./reducer";
+
 function getBounds(x, y, size) {
   const bounds = [];
   if (x === 0) {
@@ -15,14 +17,103 @@ function getBounds(x, y, size) {
   return bounds;
 }
 
+const testCells = [
+  [
+    {
+      value: null,
+      bounds: ["top", "bottom", "left", "right", "bottom", "right"],
+      candidates: [],
+    },
+    { value: null, bounds: ["top", "left", "right"], candidates: [] },
+    { value: null, bounds: ["top", "bottom", "left"], candidates: [] },
+    { value: null, bounds: ["top", "bottom"], candidates: [] },
+    { value: null, bounds: ["top"], candidates: [] },
+    { value: null, bounds: ["top", "right", "bottom"], candidates: [] },
+  ],
+  [
+    { value: 3, bounds: ["top", "left"], candidates: [] },
+    { value: null, bounds: ["bottom", "bottom"], candidates: [] },
+    {
+      value: 1,
+      bounds: ["top", "bottom", "right", "bottom", "right"],
+      candidates: [],
+    },
+    { value: null, bounds: ["top", "left", "right"], candidates: [] },
+    { value: null, bounds: ["bottom", "left", "right"], candidates: [] },
+    { value: 2, bounds: ["top", "left", "right"], candidates: [] },
+  ],
+  [
+    {
+      value: null,
+      bounds: ["bottom", "left", "right", "bottom", "right"],
+      candidates: [],
+    },
+    { value: null, bounds: ["top", "left", "right"], candidates: [] },
+    {
+      value: null,
+      bounds: ["top", "bottom", "left", "bottom", "left"],
+      candidates: [],
+    },
+    { value: null, bounds: [], candidates: [] },
+    {
+      value: null,
+      bounds: ["top", "bottom", "right", "right", "bottom"],
+      candidates: [],
+    },
+    { value: null, bounds: ["left", "right"], candidates: [] },
+  ],
+  [
+    { value: null, bounds: ["top", "bottom", "left"], candidates: [] },
+    { value: 2, bounds: [], candidates: [] },
+    {
+      value: null,
+      bounds: ["top", "bottom", "right", "bottom"],
+      candidates: [],
+    },
+    {
+      value: null,
+      bounds: ["bottom", "left", "right", "left", "bottom", "right"],
+      candidates: [],
+    },
+    { value: 3, bounds: ["top", "left", "right"], candidates: [] },
+    { value: null, bounds: ["left", "right", "left"], candidates: [] },
+  ],
+  [
+    { value: null, bounds: ["left", "top", "right"], candidates: [] },
+    {
+      value: null,
+      bounds: ["bottom", "left", "right", "right"],
+      candidates: [],
+    },
+    { value: 5, bounds: ["top", "bottom", "left"], candidates: [] },
+    { value: null, bounds: ["top", "bottom"], candidates: [] },
+    { value: null, bounds: ["right"], candidates: [] },
+    { value: null, bounds: ["left", "right", "left"], candidates: [] },
+  ],
+  [
+    { value: 4, bounds: ["left", "bottom"], candidates: [] },
+    { value: null, bounds: ["bottom", "top"], candidates: [] },
+    { value: null, bounds: ["bottom", "top"], candidates: [] },
+    { value: null, bounds: ["bottom", "top", "right"], candidates: [] },
+    { value: null, bounds: ["bottom", "left", "right"], candidates: [] },
+    {
+      value: null,
+      bounds: ["bottom", "left", "right", "left"],
+      candidates: [],
+    },
+  ],
+];
+
 export function initialiseCells(size) {
+  return testCells;
   const cells = [];
   for (var i = 0; i < size; i++) {
     const row = [];
     for (var j = 0; j < size; j++) {
       row.push({
         value: null,
-        bounds: getBounds(i, j, size)
+        bounds: getBounds(i, j, size),
+        candidates: [],
       });
     }
 
@@ -102,48 +193,108 @@ export function selectCells(currentCells, selectedCoordinates) {
   });
 }
 
-function getNeighboursAbove(cells, coords) {
+function findSiblingCoords(cells, coords, found = []) {
   const [row, column] = coords;
-
   const cell = cells[row][column];
 
-  if (!cell.bounds.includes("top")) {
-    const neighbour = cells[row - 1][column];
-    group = [...group, neighbour, getNeighbours(cells, [row - 1, column])]
+  found.push(coords);
+
+  const above = [row - 1, column];
+  if (!cell.bounds.includes("top") && !coordinateSetIncludes(found, above)) {
+    found = findSiblingCoords(cells, above, found);
   }
 
-  return neighbours;
+  const below = [row + 1, column];
+  if (!cell.bounds.includes("bottom") && !coordinateSetIncludes(found, below)) {
+    found = findSiblingCoords(cells, below, found);
+  }
+
+  const left = [row, column - 1];
+  if (!cell.bounds.includes("left") && !coordinateSetIncludes(found, left)) {
+    found = findSiblingCoords(cells, left, found);
+  }
+
+  const right = [row, column + 1];
+  if (!cell.bounds.includes("right") && !coordinateSetIncludes(found, right)) {
+    found = findSiblingCoords(cells, right, found);
+  }
+
+  return found;
 }
 
-export function getCellGroup(cells, coords, soFar = []) {
+export function findSiblings(cells, coords) {
+  const allCoords = findSiblingCoords(cells, coords);
+
+  return allCoords.map(([row, column]) => cells[row][column]);
+}
+
+export function getNeighbours(cells, coords) {
+  const size = cells.length;
   const [row, column] = coords;
+  const result = [];
 
-  const cell = cells[row][column];
+  if (row > 0 && column > 0) {
+    result.push(cells[row - 1][column - 1]);
+  }
 
-  const above = cell.bounds.includes("top") && soFar.findIndex(c => c[0] === coords[0] && c[1] === coords[1] === -1)
-    ? []
-    : getCellGroup(cells, [row - 1, column], [...soFar, coords]);
+  if (row > 0) {
+    result.push(cells[row - 1][column]);
+  }
 
-    const below = cell.bounds.includes("top") && soFar.findIndex(c => c[0] === coords[0] && c[1] === coords[1] === -1)
-    ? []
-    : getCellGroup(cells, [row - 1, column], [...soFar, coords]);
+  if (row > 0 && column < size - 1) {
+    result.push(cells[row - 1][column + 1]);
+  }
 
+  if (column > 0) {
+    result.push(cells[row][ column - 1]);
+  }
 
-  return [cell, ...above, ...below];
+  if (column < size - 1) {
+    result.push(cells[row][column + 1]);
+  }
+
+  if (row < size - 1 && column > 0) {
+    result.push(cells[row + 1][ column - 1]);
+  }
+
+  if (row < size - 1) {
+    result.push(cells[row + 1][ column]);
+  }
+
+  if (row < size - 1 && column < size - 1) {
+    result.push(cells[row + 1][column + 1]);
+  }
+
+  return result;
 }
 
-export function incrementCellValue(currentCells, selectedCoordinates) {
-  return currentCells.map((row, i) => {
+function getNextValue(currentValue, maxValue, existingValues) {
+  let candidateValue = currentValue + 1;
+
+  while (candidateValue <= maxValue) {
+    if (!existingValues.includes(candidateValue)) {
+      return candidateValue;
+    }
+    candidateValue++;
+  }
+  return null;
+}
+
+export function incrementCellValue(cells, coords) {
+  return cells.map((row, i) => {
     return row.map((cell, j) => {
-      if (i === selectedCoordinates[0] && j === selectedCoordinates[1]) {
+      if (i === coords[0] && j === coords[1]) {
+        const siblings = findSiblings(cells, coords);
+        const maxValue = siblings.length;
+        const existingValues = siblings.map((c) => c.value);
+
         return {
           ...cell,
-          value: 1
+          value: getNextValue(cell.value, maxValue, existingValues),
         };
-      }
-      else {
+      } else {
         return cell;
       }
-    })
+    });
   });
 }

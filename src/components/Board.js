@@ -27,7 +27,7 @@ function Board({ step, cells, selectedCells, onSelectStart, onSelectEnd, onSelec
                   } ${cell.bounds.join(" ")}`}
                 {...handlers(i, j)}
               >
-                {cell.value}
+                {cell.value || <span className="candidates">{cell?.candidates?.join(" ")}</span>}
                 <div className={`TEMP ${cell.bounds.join(" ")}`}></div>
               </td>
             ))}

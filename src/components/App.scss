@@ -44,6 +44,12 @@ table.game {
     &.highlighted {
       background-color: lightblue;
     }
+
+    span.candidates {
+      display: block;
+      font-size: 15px;
+      color: #888;
+    }
   }
 }
 
